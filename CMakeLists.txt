@@ -5,7 +5,13 @@ project(qsing-box VERSION 1.0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Set Qt6 installation path
+set(CMAKE_PREFIX_PATH "C:/Qt/6.9.1/mingw_64")
+
 find_package(Qt6 REQUIRED COMPONENTS Widgets LinguistTools)
+if(NOT Qt6_FOUND)
+    message(FATAL_ERROR "Qt6 not found. Please install Qt6 or set Qt6_DIR to point to your Qt6 installation.")
+endif()
 qt_standard_project_setup()
 
 add_subdirectory(src)
@@ -41,6 +47,40 @@ target_link_libraries(qsing-box PRIVATE
 set_target_properties(qsing-box PROPERTIES
     WIN32_EXECUTABLE ON
 )
+
+# Deploy Qt6 DLLs and plugins on Windows
+if(WIN32)
+    # Copy essential Qt6 DLLs to output directory
+    add_custom_command(TARGET qsing-box POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_PREFIX_PATH}/bin/Qt6Core.dll"
+        "${CMAKE_PREFIX_PATH}/bin/Qt6Gui.dll"
+        "${CMAKE_PREFIX_PATH}/bin/Qt6Widgets.dll"
+        "${CMAKE_PREFIX_PATH}/bin/libgcc_s_seh-1.dll"
+        "${CMAKE_PREFIX_PATH}/bin/libstdc++-6.dll"
+        "${CMAKE_PREFIX_PATH}/bin/libwinpthread-1.dll"
+        $<TARGET_FILE_DIR:qsing-box>
+        COMMENT "Copying Qt6 DLLs and MinGW runtime"
+    )
+    
+    # Create platforms directory and copy platform plugins
+    add_custom_command(TARGET qsing-box POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:qsing-box>/platforms
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_PREFIX_PATH}/plugins/platforms/qwindows.dll"
+        $<TARGET_FILE_DIR:qsing-box>/platforms/
+        COMMENT "Copying Qt6 platform plugins"
+    )
+    
+    # Copy styles plugins if they exist
+    add_custom_command(TARGET qsing-box POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:qsing-box>/styles
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_PREFIX_PATH}/plugins/styles/qmodernwindowsstyle.dll"
+        $<TARGET_FILE_DIR:qsing-box>/styles/
+        COMMENT "Copying Qt6 style plugins"
+    )
+endif()
 
 set(qsing-box_resources
     "resources/images/app.ico"
