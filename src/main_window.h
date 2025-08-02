@@ -3,6 +3,9 @@
 
 #include <QMainWindow>
 #include <QProcess>
+#include <QTimer>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 #include "config_manager.h"
 #include "proxy_manager.h"
@@ -45,6 +48,10 @@ private slots:
     void on_importButton_clicked();
     void on_switchButton_clicked();
 
+    // New subscription slots
+    void on_saveUrlButton_clicked();
+    void on_updateConfigButton_clicked();
+
     void enableButton(int currentRow);
 
     void displayProxyOutput();
@@ -58,13 +65,31 @@ private slots:
     void showMainWindow(int reason);
     void changeSelectedConfig();
 
+    // Subscription functionality
+    void updateSubscriptionConfig();
+    void onConfigDownloadFinished();
+    void onConfigDownloadError(QNetworkReply::NetworkError error);
+
 private:
+    void loadSubscriptionUrl();
+    void saveSubscriptionUrl();
+    void updateConfigStatus(const QString &message);
+    bool isValidUrl(const QString &url);
+    QString checkOpenSSLStatus();
+
     Ui::MainWindow *ui;
     QLabel *m_versionLabel;
 
     TrayIcon *m_trayIcon;
     ConfigManager *m_configManager;
     ProxyManager *m_proxyManager;
+
+    // Subscription functionality
+    QTimer *m_updateTimer;
+    QNetworkAccessManager *m_networkManager;
+    QNetworkReply *m_currentReply;
+    QString m_subscriptionUrl;
+    QString m_configFilePath;
 };
 
 #endif // MAIN_WINDOW_H

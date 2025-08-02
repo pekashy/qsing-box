@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 
-project(qsing-box VERSION 1.0.1 LANGUAGES CXX)
+project(qsing-box VERSION 2.0.1-subscription LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Set Qt6 installation path
 set(CMAKE_PREFIX_PATH "C:/Qt/6.9.1/mingw_64")
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets LinguistTools)
+find_package(Qt6 REQUIRED COMPONENTS Widgets LinguistTools Network)
 if(NOT Qt6_FOUND)
     message(FATAL_ERROR "Qt6 not found. Please install Qt6 or set Qt6_DIR to point to your Qt6 installation.")
 endif()
@@ -38,6 +38,7 @@ target_include_directories(qsing-box PRIVATE
 
 target_link_libraries(qsing-box PRIVATE
     Qt6::Widgets
+    Qt6::Network
     config
     proxy
     settings
@@ -56,13 +57,24 @@ if(WIN32)
         "${CMAKE_PREFIX_PATH}/bin/Qt6Core.dll"
         "${CMAKE_PREFIX_PATH}/bin/Qt6Gui.dll"
         "${CMAKE_PREFIX_PATH}/bin/Qt6Widgets.dll"
+        "${CMAKE_PREFIX_PATH}/bin/Qt6Network.dll"
         "${CMAKE_PREFIX_PATH}/bin/libgcc_s_seh-1.dll"
         "${CMAKE_PREFIX_PATH}/bin/libstdc++-6.dll"
         "${CMAKE_PREFIX_PATH}/bin/libwinpthread-1.dll"
         $<TARGET_FILE_DIR:qsing-box>
         COMMENT "Copying Qt6 DLLs and MinGW runtime"
     )
-    
+
+    # Copy network TLS plugin if it exists
+    add_custom_command(TARGET qsing-box POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:qsing-box>/networkinformation
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_PREFIX_PATH}/plugins/networkinformation/qnetworklistmanager.dll"
+        $<TARGET_FILE_DIR:qsing-box>/networkinformation/
+        COMMENT "Copying Qt6 network plugins"
+        COMMAND_EXPAND_LISTS
+    )
+
     # Create platforms directory and copy platform plugins
     add_custom_command(TARGET qsing-box POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:qsing-box>/platforms
@@ -71,7 +83,7 @@ if(WIN32)
         $<TARGET_FILE_DIR:qsing-box>/platforms/
         COMMENT "Copying Qt6 platform plugins"
     )
-    
+
     # Copy styles plugins if they exist
     add_custom_command(TARGET qsing-box POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:qsing-box>/styles
@@ -115,6 +127,27 @@ qt_add_translations(qsing-box
         languages/qsing-box_en_US.ts
     LUPDATE_OPTIONS
         -no-obsolete
+)
+# ---- TLS backend plugin ----------------------------------------------------
+set(QT_TLS_PLUGIN_DIR "${CMAKE_PREFIX_PATH}/plugins/tls")
+
+add_custom_command(TARGET qsing-box POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory
+        $<TARGET_FILE_DIR:qsing-box>/tls
+        # copy OpenSSL backend; add Schannel or cert-only if you want fallbacks
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${QT_TLS_PLUGIN_DIR}/qopensslbackend.dll"
+        $<TARGET_FILE_DIR:qsing-box>/tls/
+        COMMENT "Copying Qt TLS backend plugin (OpenSSL)"
+)
+
+set(OPENSSL_DLL_PATH "C:/Program Files/OpenSSL-Win64/bin")
+add_custom_command(TARGET qsing-box POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${OPENSSL_DLL_PATH}/libssl-3-x64.dll"
+        "${OPENSSL_DLL_PATH}/libcrypto-3-x64.dll"
+        $<TARGET_FILE_DIR:qsing-box>
+        COMMENT "Copying OpenSSL 3 runtime"
 )
 
 string(TIMESTAMP BUILD_TIME "%Y.%m.%d %H:%M")

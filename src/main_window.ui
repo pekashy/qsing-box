@@ -178,11 +178,11 @@
          </sizepolicy>
         </property>
         <property name="title">
-         <string>Profiles</string>
+         <string>Subscription</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">
          <item>
-          <widget class="QLabel" name="configLabel">
+          <widget class="QLabel" name="subscriptionLabel">
            <property name="font">
             <font>
              <pointsize>9</pointsize>
@@ -190,12 +190,70 @@
             </font>
            </property>
            <property name="text">
-            <string>Config for running:</string>
+            <string>Subscription URL:</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="configNameLabel">
+          <widget class="QLineEdit" name="subscriptionUrlEdit">
+           <property name="placeholderText">
+            <string>Enter subscription URL (e.g., https://example.com/config)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="subscriptionButtonLayout">
+           <item>
+            <widget class="QPushButton" name="saveUrlButton">
+             <property name="text">
+              <string>Save URL</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../build/Desktop_Qt_6_7_0_MSVC2019_64bit-Debug/.rcc/res.qrc">
+               <normaloff>:/images/save.png</normaloff>:/images/save.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>16</width>
+               <height>16</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="updateConfigButton">
+             <property name="text">
+              <string>Update Now</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../build/Desktop_Qt_6_7_0_MSVC2019_64bit-Debug/.rcc/res.qrc">
+               <normaloff>:/images/switch.png</normaloff>:/images/switch.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>16</width>
+               <height>16</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QLabel" name="configStatusLabel">
            <property name="font">
             <font>
              <pointsize>8</pointsize>
@@ -203,160 +261,60 @@
             </font>
            </property>
            <property name="text">
-            <string>&lt;Empty config&gt;</string>
+            <string>Status: No subscription configured</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout">
-           <item>
-            <layout class="QVBoxLayout" name="verticalLayout">
-             <item>
-              <widget class="QToolButton" name="switchButton">
-               <property name="text">
-                <string>Switch</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../build/Desktop_Qt_6_7_0_MSVC2019_64bit-Debug/.rcc/res.qrc">
-                 <normaloff>:/images/switch.png</normaloff>:/images/switch.png</iconset>
-               </property>
-               <property name="iconSize">
-                <size>
-                 <width>16</width>
-                 <height>16</height>
-                </size>
-               </property>
-               <property name="toolButtonStyle">
-                <enum>Qt::ToolButtonTextUnderIcon</enum>
-               </property>
-               <property name="autoRaise">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QToolButton" name="importButton">
-               <property name="text">
-                <string>Import</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../build/Desktop_Qt_6_7_0_MSVC2019_64bit-Debug/.rcc/res.qrc">
-                 <normaloff>:/images/import.png</normaloff>:/images/import.png</iconset>
-               </property>
-               <property name="iconSize">
-                <size>
-                 <width>15</width>
-                 <height>16</height>
-                </size>
-               </property>
-               <property name="toolButtonStyle">
-                <enum>Qt::ToolButtonTextUnderIcon</enum>
-               </property>
-               <property name="autoRaise">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QToolButton" name="addButton">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>New</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../build/Desktop_Qt_6_7_0_MSVC2019_64bit-Debug/.rcc/res.qrc">
-                 <normaloff>:/images/add-new.png</normaloff>:/images/add-new.png</iconset>
-               </property>
-               <property name="iconSize">
-                <size>
-                 <width>16</width>
-                 <height>16</height>
-                </size>
-               </property>
-               <property name="toolButtonStyle">
-                <enum>Qt::ToolButtonTextUnderIcon</enum>
-               </property>
-               <property name="autoRaise">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QToolButton" name="editButton">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>Edit</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../build/Desktop_Qt_6_7_0_MSVC2019_64bit-Debug/.rcc/res.qrc">
-                 <normaloff>:/images/edit.png</normaloff>:/images/edit.png</iconset>
-               </property>
-               <property name="iconSize">
-                <size>
-                 <width>16</width>
-                 <height>16</height>
-                </size>
-               </property>
-               <property name="toolButtonStyle">
-                <enum>Qt::ToolButtonTextUnderIcon</enum>
-               </property>
-               <property name="autoRaise">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QToolButton" name="deleteButton">
-               <property name="text">
-                <string>Delete</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../build/Desktop_Qt_6_7_0_MSVC2019_64bit-Debug/.rcc/res.qrc">
-                 <normaloff>:/images/delete.png</normaloff>:/images/delete.png</iconset>
-               </property>
-               <property name="iconSize">
-                <size>
-                 <width>16</width>
-                 <height>16</height>
-                </size>
-               </property>
-               <property name="toolButtonStyle">
-                <enum>Qt::ToolButtonTextUnderIcon</enum>
-               </property>
-               <property name="autoRaise">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="verticalSpacer">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>40</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="QListWidget" name="configListWidget"/>
-           </item>
-          </layout>
+          <widget class="QLabel" name="configPreviewLabel">
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Downloaded Configuration:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTextEdit" name="configPreviewEdit">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>100</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Consolas</family>
+             <pointsize>8</pointsize>
+            </font>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+           <property name="placeholderText">
+            <string>No configuration downloaded yet</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </widget>
@@ -403,7 +361,7 @@
    </property>
   </action>
  </widget>
- <resources>
+ <resources>amaam
   <include location="../build/Desktop_Qt_6_7_0_MSVC2019_64bit-Debug/.rcc/res.qrc"/>
  </resources>
  <connections/>
